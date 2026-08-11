@@ -1,0 +1,25 @@
+{
+  "name": "飛騨防災ガイド",
+  "short_name": "飛騨防災",
+  "description": "飛騨市の中学生による防災探究学習サイト。避難場所の確認方法や持ち物チェックリスト、防災知識、防災クイズを紹介しています。",
+  "start_url": "/hidacity-bousaiguide/",
+  "scope": "/hidacity-bousaiguide/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e8650a",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "/hidacity-bousaiguide/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/hidacity-bousaiguide/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
