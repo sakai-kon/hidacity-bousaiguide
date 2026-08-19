@@ -1,11 +1,14 @@
 /**
  * sw.js
  * 飛騨防災ガイド Service Worker
- * オフラインでも主要ページを表示できるように、事前キャッシュ（プレキャッシュ）を行う。
- * GitHub Pages のベースパス "/hidacity-bousaiguide/" を前提にパスを列挙する。
+ *
+ * HTMLはネットワーク優先にして、サイト更新時に古いページが
+ * 最初に表示される問題を防ぐ。
+ * ネットワークに接続できない場合のみキャッシュへフォールバックする。
+ * その他のGETリソースは従来どおりキャッシュを優先し、裏で更新する。
  */
 
-const CACHE_NAME = "hida-bousai-v1";
+const CACHE_NAME = "hida-bousai-v2";
 const BASE = "/hidacity-bousaiguide";
 
 const PRECACHE_URLS = [
@@ -59,13 +62,31 @@ self.addEventListener("fetch", (event) => {
   // GET以外（POSTなど）はそのままネットワークへ
   if (request.method !== "GET") return;
 
+  // HTMLのページ遷移はネットワーク優先。
+  // 最新版を最初に表示し、オフライン時だけキャッシュを使う。
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`)))
+    );
+    return;
+  }
+
+  // CSS / JS / 画像などはキャッシュを返しつつ裏で更新。
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) {
-        // キャッシュを返しつつ、裏側で更新（stale-while-revalidate）
         fetchAndUpdate(request);
         return cached;
       }
+
       return fetch(request)
         .then((response) => {
           if (response && response.ok) {
