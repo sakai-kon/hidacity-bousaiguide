@@ -8,14 +8,15 @@
  * - FAQアコーディオンの開閉
  * - 防災記事リンクの共通ナビ追加・順序統一
  * - 全ページ共通サイト内検索
- * - 共通faviconの適用
+ * - 共通ブランドアイコンの適用
  */
 
 import { saveData, loadData } from "/hidacity-bousaiguide/assets/js/storage.js";
 import { initSiteSearch } from "/hidacity-bousaiguide/assets/js/site-search.js";
 
 const THEME_KEY = "theme";
-const FAVICON_URL = "/hidacity-bousaiguide/favicon.svg?v=2026-08-20-icon1";
+const BRAND_ICON_URL = "/hidacity-bousaiguide/assets/icons/hida-bousai-icon.svg?v=2026-08-20-icon2";
+const FAVICON_URL = `${BRAND_ICON_URL}`;
 
 function applyTheme(theme) {
   if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
@@ -35,6 +36,26 @@ function initTheme() {
       applyTheme(next);
       saveData(THEME_KEY, next);
     });
+  });
+}
+
+function ensureBrandIcon() {
+  document.querySelectorAll(".logo .logo-badge").forEach((badge) => {
+    if (badge.querySelector('img[data-brand-icon="true"]')) return;
+    badge.replaceChildren();
+    const img = document.createElement("img");
+    img.src = BRAND_ICON_URL;
+    img.alt = "";
+    img.width = 40;
+    img.height = 40;
+    img.decoding = "async";
+    img.setAttribute("data-brand-icon", "true");
+    img.style.display = "block";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "inherit";
+    badge.appendChild(img);
   });
 }
 
@@ -71,7 +92,6 @@ function ensureArticleLink(container) {
 
   link.classList.toggle("is-active", location.pathname.startsWith("/hidacity-bousaiguide/articles/"));
 
-  // すべてのページで「防災記事」をハザードマップの直後に統一。
   const hazard = container.querySelector('a[href="/hidacity-bousaiguide/hazard/"]');
   if (hazard && hazard.nextElementSibling !== link) {
     container.insertBefore(link, hazard.nextElementSibling);
@@ -139,6 +159,7 @@ function initAccordion() {
 }
 
 function init() {
+  ensureBrandIcon();
   ensureFavicon();
   initTheme();
   initHeaderShadow();
