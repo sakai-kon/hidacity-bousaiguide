@@ -7,30 +7,56 @@
 <link rel="manifest" href="/hidacity-bousaiguide/manifest.webmanifest"><link rel="icon" href="/hidacity-bousaiguide/favicon.svg">
 <link rel="stylesheet" href="/hidacity-bousaiguide/assets/css/global.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-<style>#hazard-map{height:min(72vh,720px);min-height:480px;border-radius:18px;overflow:hidden;border:1px solid var(--border,#ddd)}.map-status{padding:12px 16px;margin:12px 0;border-radius:10px;background:#f4f7fa}.map-status.error{background:#fff1f1;color:#9b1c1c}.map-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;margin-top:14px}.legend-item{display:flex;align-items:center;gap:7px}.swatch{width:18px;height:18px;border-radius:4px}.yellow{background:#f6d32d}.red{background:#d72626}.source-box{margin-top:18px;padding:16px;border-radius:14px;background:rgba(0,0,0,.04);font-size:14px}.leaflet-control-layers{font-family:inherit}</style>
+<style>
+#hazard-map{height:min(72vh,720px);min-height:480px;border-radius:18px;overflow:hidden;border:1px solid var(--border,#ddd)}
+.map-status{padding:12px 16px;margin:12px 0;border-radius:10px;background:#f4f7fa}
+.map-status.error{background:#fff1f1;color:#9b1c1c}
+.map-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;margin-top:14px}
+.legend-item{display:flex;align-items:center;gap:7px}
+.swatch{width:18px;height:18px;border-radius:4px}
+.yellow{background:#f6d32d}.red{background:#d72626}
+.source-box{margin-top:18px;padding:16px;border-radius:14px;background:rgba(0,0,0,.04);font-size:14px}
+.leaflet-control-layers{font-family:inherit}.leaflet-control-layers-expanded{padding:10px 12px}
+</style>
 </head>
 <body>
 <header class="site-header"><div class="header-inner"><a href="/hidacity-bousaiguide/" class="logo"><span class="logo-badge">⚡</span><span>飛騨防災ガイド<span class="logo-sub">中学生の防災探究学習</span></span></a><nav class="pc-nav"><a href="/hidacity-bousaiguide/" class="nav-link">トップ</a><a href="/hidacity-bousaiguide/hazard/" class="nav-link is-active">避難場所・ハザードマップ</a><a href="/hidacity-bousaiguide/bag/" class="nav-link">持ち物チェック</a><a href="/hidacity-bousaiguide/knowledge/" class="nav-link">防災知識</a><a href="/hidacity-bousaiguide/quiz/" class="nav-link">防災クイズ</a><a href="/hidacity-bousaiguide/contact/" class="nav-link">お問い合わせ</a></nav></div></header>
-<main><section class="page-hero"><div class="container page-hero-inner"><p class="breadcrumb"><a href="/hidacity-bousaiguide/">トップ</a> / 避難場所・ハザードマップ</p><span class="eyebrow">🗺️ 危険な場所を知る</span><h1 class="section-title mt-2">飛騨市の土砂災害ハザードマップ</h1><p class="section-lead">土砂災害警戒区域等を地図上で確認できます。自宅や学校の周辺を確認してみましょう。</p></div></section>
-<section class="section"><div class="container"><div class="notice is-blue mb-3"><span class="notice-icon">ℹ️</span><div>地図の右上から「土砂災害警戒区域」と「土砂災害特別警戒区域」の表示を切り替えられます。</div></div><div id="hazard-map" aria-label="飛騨市土砂災害ハザードマップ"></div><div id="map-status" class="map-status">ハザードデータを読み込んでいます…</div><div class="map-legend"><span class="legend-item"><span class="swatch yellow"></span>土砂災害警戒区域（イエローゾーン）</span><span class="legend-item"><span class="swatch red"></span>土砂災害特別警戒区域（レッドゾーン）</span></div><div class="source-box"><strong>データ出典：岐阜県</strong><br>データ年月日：令和7年3月31日<br><br>土砂災害警戒区域等は年度途中でも順次指定されるため、最新情報は<a href="https://portal.gifugis.jp/sabo/" target="_blank" rel="noopener noreferrer">岐阜県「土砂災害防止法ポータル」</a>で確認してください。</div><hr class="divider"><div class="grid grid-2"><div class="solid-card"><h2 class="card-title">飛騨市WEB版ハザードマップ</h2><p class="text-muted text-sm mb-2">洪水など、他の災害リスクも飛騨市公式Webハザードマップで確認できます。</p><a class="btn btn-blue btn-block" target="_blank" rel="noopener noreferrer" href="https://www.city.hida.gifu.jp/site/bousai/76353.html">飛騨市WEB版ハザードマップを見る ↗</a></div><div class="solid-card"><h2 class="card-title">指定緊急避難場所・避難所</h2><p class="text-muted text-sm mb-2">災害の種類ごとに指定されている避難場所を確認できます。</p><a class="btn btn-blue btn-block" target="_blank" rel="noopener noreferrer" href="https://www.city.hida.gifu.jp/site/bousai/268.html">指定緊急避難場所一覧を見る ↗</a></div></div></div></section></main>
+<main>
+<section class="page-hero"><div class="container page-hero-inner"><p class="breadcrumb"><a href="/hidacity-bousaiguide/">トップ</a> / 避難場所・ハザードマップ</p><span class="eyebrow">🗺️ 危険な場所を知る</span><h1 class="section-title mt-2">飛騨市の土砂災害ハザードマップ</h1><p class="section-lead">岐阜県の土砂災害警戒区域等を地図上で確認できます。自宅や学校の周辺を確認してみましょう。</p></div></section>
+<section class="section"><div class="container">
+<div class="notice is-blue mb-3"><span class="notice-icon">ℹ️</span><div>地図の右上のレイヤー操作から、「土砂災害警戒区域」と「土砂災害特別警戒区域」の表示を切り替えられます。</div></div>
+<div id="hazard-map" aria-label="飛騨市土砂災害ハザードマップ"></div>
+<div id="map-status" class="map-status">ハザードデータを読み込んでいます…</div>
+<div class="map-legend"><span class="legend-item"><span class="swatch yellow"></span>土砂災害警戒区域（イエローゾーン）</span><span class="legend-item"><span class="swatch red"></span>土砂災害特別警戒区域（レッドゾーン）</span></div>
+<div class="source-box"><strong>データ出典：岐阜県</strong><br>データ年月日：令和7年3月31日<br><br>土砂災害警戒区域等は年度途中でも順次指定されるため、最新情報は<a href="https://portal.gifugis.jp/sabo/" target="_blank" rel="noopener noreferrer">岐阜県「土砂災害防止法ポータル」</a>で確認してください。</div>
+<hr class="divider"><div class="grid grid-2"><div class="solid-card"><h2 class="card-title">飛騨市WEB版ハザードマップ</h2><p class="text-muted text-sm mb-2">洪水など、他の災害リスクも飛騨市公式Webハザードマップで確認できます。</p><a class="btn btn-blue btn-block" target="_blank" rel="noopener noreferrer" href="https://www.city.hida.gifu.jp/site/bousai/76353.html">飛騨市WEB版ハザードマップを見る ↗</a></div><div class="solid-card"><h2 class="card-title">指定緊急避難場所・避難所</h2><p class="text-muted text-sm mb-2">災害の種類ごとに指定されている避難場所を確認できます。</p><a class="btn btn-blue btn-block" target="_blank" rel="noopener noreferrer" href="https://www.city.hida.gifu.jp/site/bousai/268.html">指定緊急避難場所一覧を見る ↗</a></div></div>
+</div></section></main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
+const BASE='/hidacity-bousaiguide';
+const DATA_VERSION='2026-08-20';
 const map=L.map('hazard-map').setView([36.25,137.25],10);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 const status=document.getElementById('map-status');
 const yellowStyle={color:'#b58a00',weight:1,fillColor:'#f6d32d',fillOpacity:.42};
 const redStyle={color:'#a60000',weight:1,fillColor:'#d72626',fillOpacity:.38};
-function popup(feature){const p=feature.properties||{};return '<strong>'+ (p['渓流名']||'土砂災害区域') +'</strong><br>'+['所在地','現象種類','告示番号','年月日'].filter(k=>p[k]).map(k=>k+'：'+p[k]).join('<br>');}
-async function loadLayer(url,name,style){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(name+' HTTP '+r.status+'：'+url);const data=await r.json();if(!data||!Array.isArray(data.features))throw new Error(name+'のGeoJSON形式が不正です');return L.geoJSON(data,{style:style,onEachFeature:(f,l)=>l.bindPopup(popup(f))});}
-const layers={};
-Promise.allSettled([
- loadLayer('/hidacity-bousaiguide/hazard/data/dosha-keikai.geojson','土砂災害警戒区域',yellowStyle),
- loadLayer('/hidacity-bousaiguide/hazard/data/dosha-tokubetsu.geojson','土砂災害特別警戒区域',redStyle)
-]).then(results=>{
- const errors=[];
- if(results[0].status==='fulfilled'){layers['🟨 土砂災害警戒区域']=results[0].value;results[0].value.addTo(map);}else errors.push(results[0].reason.message);
- if(results[1].status==='fulfilled'){layers['🟥 土砂災害特別警戒区域']=results[1].value;results[1].value.addTo(map);}else errors.push(results[1].reason.message);
- if(Object.keys(layers).length){L.control.layers(null,layers,{collapsed:false,position:'topright'}).addTo(map);const group=L.featureGroup(Object.values(layers));map.fitBounds(group.getBounds(),{padding:[20,20]});}
- if(errors.length){status.classList.add('error');status.textContent='一部またはすべてのデータを読み込めませんでした：'+errors.join(' / ');console.error(errors);}else{status.textContent='読み込み完了：土砂災害警戒区域・土砂災害特別警戒区域を表示しています。';}
-}).catch(e=>{status.classList.add('error');status.textContent='地図の初期化に失敗しました：'+e.message;console.error(e);});
-</script></body></html>
+const fields=['所在地','現象種類','告示番号','年月日'];
+function escapeHtml(value){return String(value).replace(/[&<>'"]/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[char]));}
+function popup(feature){const p=feature.properties||{};const title=escapeHtml(p['渓流名']||'土砂災害区域');const rows=fields.filter(k=>p[k]).map(k=>`${escapeHtml(k)}：${escapeHtml(p[k])}`).join('<br>');return `<strong>${title}</strong>${rows?'<br>'+rows:''}`;}
+async function loadLayer(url,name,style){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error(`${name} HTTP ${response.status}`);const data=await response.json();if(!data||data.type!=='FeatureCollection'||!Array.isArray(data.features))throw new Error(`${name}のGeoJSON形式が不正です`);const layer=L.geoJSON(data,{style,onEachFeature:(feature,layer)=>layer.bindPopup(popup(feature))});return {name,layer,count:data.features.length};}
+const tasks=[
+ loadLayer(`${BASE}/hazard/data/dosha-keikai.geojson?v=${DATA_VERSION}`,'土砂災害警戒区域',yellowStyle),
+ loadLayer(`${BASE}/hazard/data/dosha-tokubetsu.geojson?v=${DATA_VERSION}`,'土砂災害特別警戒区域',redStyle)
+];
+Promise.allSettled(tasks).then(results=>{
+ const overlays={};const loaded=[];const errors=[];
+ for(const result of results){if(result.status==='fulfilled'){overlays[result.value.name==='土砂災害警戒区域'?'🟨 土砂災害警戒区域':'🟥 土砂災害特別警戒区域']=result.value.layer;result.value.layer.addTo(map);loaded.push(result.value);}else{errors.push(result.reason?.message||'不明なエラー');}}
+ if(loaded.length){L.control.layers(null,overlays,{collapsed:false,position:'topright'}).addTo(map);const group=L.featureGroup(loaded.map(item=>item.layer));const bounds=group.getBounds();if(bounds.isValid())map.fitBounds(bounds,{padding:[24,24],maxZoom:13});}
+ const count=loaded.reduce((sum,item)=>sum+item.count,0);
+ if(errors.length){status.classList.add('error');status.textContent=`データの一部を読み込めませんでした（表示中：${count}区域）。${errors.join(' / ')}`;console.error(errors);}else{status.textContent=`読み込み完了：${count.toLocaleString('ja-JP')}区域を表示しています。`;}
+}).catch((error)=>{status.classList.add('error');status.textContent=`地図の初期化に失敗しました：${error.message}`;console.error(error);});
+
+// ハザードページを直接開いた場合も、最新のService Workerへ更新できるようにする。
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register(`${BASE}/sw.js?v=${DATA_VERSION}`,{scope:`${BASE}/`,updateViaCache:'none'}).catch((error)=>console.warn('[pwa] Service Worker registration failed:',error));});}
+</script>
+</body></html>
