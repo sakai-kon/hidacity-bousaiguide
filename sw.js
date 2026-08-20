@@ -2,9 +2,11 @@
  * sw.js
  * 飛騨防災ガイド Service Worker
  * HTMLはネットワーク優先。ハザード・記事・検索データは常に最新取得。
+ * 古い hida-bousai キャッシュは activate 時に完全削除する。
  */
 
-const CACHE_NAME = "hida-bousai-v12";
+const CACHE_NAME = "hida-bousai-v13";
+const CACHE_PREFIX = "hida-bousai-";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
 const ARTICLE_JSON = `${BASE}/articles/articles.json`;
@@ -23,11 +25,23 @@ const PRECACHE_URLS = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys
+          .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener("fetch", (event) => {
