@@ -6,7 +6,7 @@
  * - ダークモードの切替・保存
  * - スクロールフェードイン([data-fade])
  * - FAQアコーディオンの開閉
- * - 防災記事リンクの共通ナビ追加
+ * - 防災記事リンクの共通ナビ追加・順序統一
  * - 全ページ共通サイト内検索
  */
 
@@ -45,15 +45,25 @@ function initHeaderShadow() {
 }
 
 function ensureArticleLink(container) {
-  if (!container || container.querySelector('a[href="/hidacity-bousaiguide/articles/"]')) return;
-  const link = document.createElement("a");
-  link.href = "/hidacity-bousaiguide/articles/";
-  link.className = "nav-link";
-  link.textContent = "防災記事";
-  if (location.pathname.startsWith("/hidacity-bousaiguide/articles/")) link.classList.add("is-active");
+  if (!container) return;
+
+  let link = container.querySelector('a[href="/hidacity-bousaiguide/articles/"]');
+  if (!link) {
+    link = document.createElement("a");
+    link.href = "/hidacity-bousaiguide/articles/";
+    link.className = "nav-link";
+    link.textContent = "防災記事";
+    container.appendChild(link);
+  }
+
+  link.classList.toggle("is-active", location.pathname.startsWith("/hidacity-bousaiguide/articles/"));
+
+  // すべてのページで「防災記事」をハザードマップの直後に統一。
+  // これにより記事ページだけナビ項目の並びが変わって、右側のボタン位置がずれる問題を防ぐ。
   const hazard = container.querySelector('a[href="/hidacity-bousaiguide/hazard/"]');
-  if (hazard && hazard.nextSibling) container.insertBefore(link, hazard.nextSibling);
-  else container.appendChild(link);
+  if (hazard && hazard.nextElementSibling !== link) {
+    container.insertBefore(link, hazard.nextElementSibling);
+  }
 }
 
 function initArticleNav() {
