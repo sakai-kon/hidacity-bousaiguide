@@ -4,18 +4,19 @@
  * HTMLはネットワーク優先。ハザード・記事・検索データは常に最新取得。
  */
 
-const CACHE_NAME = "hida-bousai-v10";
+const CACHE_NAME = "hida-bousai-v11";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
 const ARTICLE_JSON = `${BASE}/articles/articles.json`;
 const SEARCH_JSON = `${BASE}/search/site-search.json`;
 const HERO_IMAGE = `${BASE}/images/hero/castle-photo.svg`;
+const BRAND_ICON = `${BASE}/assets/icons/hida-bousai-icon.svg`;
 const UI_REFRESH_CSS = `${BASE}/assets/css/ui-refresh.css`;
 const SITE_SEARCH_CSS = `${BASE}/assets/css/site-search.css`;
 
 const PRECACHE_URLS = [
   `${BASE}/`, `${BASE}/hazard/`, `${BASE}/bag/`, `${BASE}/knowledge/`, `${BASE}/quiz/`, `${BASE}/contact/`,
-  `${BASE}/privacy/`, `${BASE}/terms/`, `${BASE}/articles/`, `${BASE}/manifest.webmanifest`, `${BASE}/favicon.svg`,
+  `${BASE}/privacy/`, `${BASE}/terms/`, `${BASE}/articles/`, `${BASE}/manifest.webmanifest`, `${BASE}/favicon.svg`, BRAND_ICON,
   `${BASE}/assets/css/global.css`, UI_REFRESH_CSS, SITE_SEARCH_CSS,
   `${BASE}/assets/js/common.js`, `${BASE}/assets/js/site-search.js`, `${BASE}/assets/js/storage.js`,
   `${BASE}/assets/js/checklist.js`, `${BASE}/assets/js/quiz.js`, `${BASE}/assets/js/pwa.js`, HERO_IMAGE,
@@ -40,7 +41,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (requestUrl.origin === self.location.origin && (requestUrl.pathname === UI_REFRESH_CSS || requestUrl.pathname === SITE_SEARCH_CSS || requestUrl.pathname === `${BASE}/favicon.svg`)) {
+  if (requestUrl.origin === self.location.origin && (requestUrl.pathname === UI_REFRESH_CSS || requestUrl.pathname === SITE_SEARCH_CSS || requestUrl.pathname === `${BASE}/favicon.svg` || requestUrl.pathname === BRAND_ICON)) {
     event.respondWith(fetch(request, { cache: "no-store" }).then((response) => {
       if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
       return response;
