@@ -10,14 +10,8 @@
   "lang": "ja",
   "icons": [
     {
-      "src": "/hidacity-bousaiguide/icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/hidacity-bousaiguide/icons/icon-512.png",
-      "sizes": "512x512",
+      "src": "/hidacity-bousaiguide/assets/icons/hida-bousai-icon.png",
+      "sizes": "any",
       "type": "image/png",
       "purpose": "any maskable"
     }
