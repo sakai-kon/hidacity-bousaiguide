@@ -1,22 +1,24 @@
 /**
  * sw.js
  * 飛騨防災ガイド Service Worker
- * HTMLはネットワーク優先。ハザードGeoJSONと記事データは常に最新取得。
+ * HTMLはネットワーク優先。ハザード・記事・検索データは常に最新取得。
  */
 
-const CACHE_NAME = "hida-bousai-v8";
+const CACHE_NAME = "hida-bousai-v9";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
-const ARTICLES_PREFIX = `${BASE}/articles/`;
+const ARTICLE_JSON = `${BASE}/articles/articles.json`;
+const SEARCH_JSON = `${BASE}/search/site-search.json`;
 const HERO_IMAGE = `${BASE}/images/hero/castle-photo.svg`;
 const UI_REFRESH_CSS = `${BASE}/assets/css/ui-refresh.css`;
+const SITE_SEARCH_CSS = `${BASE}/assets/css/site-search.css`;
 
 const PRECACHE_URLS = [
   `${BASE}/`, `${BASE}/hazard/`, `${BASE}/bag/`, `${BASE}/knowledge/`, `${BASE}/quiz/`, `${BASE}/contact/`,
-  `${BASE}/privacy/`, `${BASE}/terms/`, `${BASE}/manifest.webmanifest`, `${BASE}/favicon.svg`,
-  `${BASE}/assets/css/global.css`, UI_REFRESH_CSS,
-  `${BASE}/assets/js/common.js`, `${BASE}/assets/js/storage.js`, `${BASE}/assets/js/checklist.js`,
-  `${BASE}/assets/js/quiz.js`, `${BASE}/assets/js/pwa.js`, HERO_IMAGE,
+  `${BASE}/privacy/`, `${BASE}/terms/`, `${BASE}/articles/`, `${BASE}/manifest.webmanifest`, `${BASE}/favicon.svg`,
+  `${BASE}/assets/css/global.css`, UI_REFRESH_CSS, SITE_SEARCH_CSS,
+  `${BASE}/assets/js/common.js`, `${BASE}/assets/js/site-search.js`, `${BASE}/assets/js/storage.js`,
+  `${BASE}/assets/js/checklist.js`, `${BASE}/assets/js/quiz.js`, `${BASE}/assets/js/pwa.js`, HERO_IMAGE,
   `${BASE}/icons/icon-192.png`, `${BASE}/icons/icon-512.png`,
 ];
 
@@ -33,12 +35,12 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const requestUrl = new URL(request.url);
 
-  if (requestUrl.origin === self.location.origin && (requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX) || requestUrl.pathname.startsWith(ARTICLES_PREFIX))) {
+  if (requestUrl.origin === self.location.origin && (requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX) || requestUrl.pathname === ARTICLE_JSON || requestUrl.pathname === SEARCH_JSON)) {
     event.respondWith(fetch(request, { cache: "no-store" }));
     return;
   }
 
-  if (requestUrl.origin === self.location.origin && requestUrl.pathname === UI_REFRESH_CSS) {
+  if (requestUrl.origin === self.location.origin && (requestUrl.pathname === UI_REFRESH_CSS || requestUrl.pathname === SITE_SEARCH_CSS)) {
     event.respondWith(fetch(request, { cache: "no-store" }).then((response) => {
       if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
       return response;
