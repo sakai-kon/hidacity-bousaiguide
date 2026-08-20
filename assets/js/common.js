@@ -60,15 +60,20 @@ function ensureBrandIcon() {
   });
 }
 
-function ensureFavicon() {
-  let icon = document.querySelector('link[rel="icon"]');
-  if (!icon) {
-    icon = document.createElement("link");
-    icon.rel = "icon";
-    document.head.appendChild(icon);
+function ensureBrandLink(rel, type = "image/png") {
+  let link = document.querySelector(`link[rel="${rel}"]`);
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = rel;
+    document.head.appendChild(link);
   }
-  icon.type = "image/png";
-  icon.href = FAVICON_URL;
+  link.type = type;
+  link.href = FAVICON_URL;
+}
+
+function ensureFavicon() {
+  ensureBrandLink("icon");
+  ensureBrandLink("apple-touch-icon");
 }
 
 function initHeaderShadow() {
@@ -95,7 +100,7 @@ function ensureArticleLink(container) {
 
   const hazard = container.querySelector('a[href="/hidacity-bousaiguide/hazard/"]');
   if (hazard && hazard.nextElementSibling !== link) {
-    container.insertBefore(link, hazard.nextElementSibling);
+    container.insertBefore(link, hazard.nextSibling);
   }
 }
 
