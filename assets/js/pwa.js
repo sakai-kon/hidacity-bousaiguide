@@ -1,16 +1,29 @@
 /**
  * pwa.js
- * Service Worker(sw.js)の登録処理のみを行う。
- * サイト更新時に古いService Workerが残らないよう、明示的に更新を促す。
+ * Service Workerの登録と、全ページ共通UIリフレッシュCSSの読み込みを行う。
  */
 
-const SW_VERSION = "2026-08-20-2";
+const SW_VERSION = "2026-08-20-3";
+const UI_CSS_VERSION = "2026-08-20-ui-1";
+const BASE = "/hidacity-bousaiguide";
+
+function ensureUiRefreshStyles() {
+  const href = `${BASE}/assets/css/ui-refresh.css?v=${UI_CSS_VERSION}`;
+  if (document.querySelector(`link[data-ui-refresh][href^="${BASE}/assets/css/ui-refresh.css"]`)) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = href;
+  link.dataset.uiRefresh = "true";
+  document.head.appendChild(link);
+}
+
+ensureUiRefreshStyles();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register(`/hidacity-bousaiguide/sw.js?v=${SW_VERSION}`, {
-        scope: "/hidacity-bousaiguide/",
+      .register(`${BASE}/sw.js?v=${SW_VERSION}`, {
+        scope: `${BASE}/`,
         updateViaCache: "none",
       })
       .then((reg) => {
