@@ -4,7 +4,7 @@
  * HTMLはネットワーク優先。ハザード・記事・検索データは常に最新取得。
  */
 
-const CACHE_NAME = "hida-bousai-v9";
+const CACHE_NAME = "hida-bousai-v10";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
 const ARTICLE_JSON = `${BASE}/articles/articles.json`;
@@ -40,7 +40,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (requestUrl.origin === self.location.origin && (requestUrl.pathname === UI_REFRESH_CSS || requestUrl.pathname === SITE_SEARCH_CSS)) {
+  if (requestUrl.origin === self.location.origin && (requestUrl.pathname === UI_REFRESH_CSS || requestUrl.pathname === SITE_SEARCH_CSS || requestUrl.pathname === `${BASE}/favicon.svg`)) {
     event.respondWith(fetch(request, { cache: "no-store" }).then((response) => {
       if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
       return response;
