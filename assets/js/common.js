@@ -7,9 +7,11 @@
  * - スクロールフェードイン([data-fade])
  * - FAQアコーディオンの開閉
  * - 防災記事リンクの共通ナビ追加
+ * - 全ページ共通サイト内検索
  */
 
 import { saveData, loadData } from "/hidacity-bousaiguide/assets/js/storage.js";
+import { initSiteSearch } from "/hidacity-bousaiguide/assets/js/site-search.js";
 
 const THEME_KEY = "theme";
 
@@ -121,6 +123,7 @@ function init() {
   initMobileMenu();
   initScrollFade();
   initAccordion();
+  initSiteSearch();
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
