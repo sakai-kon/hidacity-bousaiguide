@@ -8,12 +8,14 @@
  * - FAQアコーディオンの開閉
  * - 防災記事リンクの共通ナビ追加・順序統一
  * - 全ページ共通サイト内検索
+ * - 共通faviconの適用
  */
 
 import { saveData, loadData } from "/hidacity-bousaiguide/assets/js/storage.js";
 import { initSiteSearch } from "/hidacity-bousaiguide/assets/js/site-search.js";
 
 const THEME_KEY = "theme";
+const FAVICON_URL = "/hidacity-bousaiguide/favicon.svg?v=2026-08-20-icon1";
 
 function applyTheme(theme) {
   if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
@@ -34,6 +36,17 @@ function initTheme() {
       saveData(THEME_KEY, next);
     });
   });
+}
+
+function ensureFavicon() {
+  let icon = document.querySelector('link[rel="icon"]');
+  if (!icon) {
+    icon = document.createElement("link");
+    icon.rel = "icon";
+    document.head.appendChild(icon);
+  }
+  icon.type = "image/svg+xml";
+  icon.href = FAVICON_URL;
 }
 
 function initHeaderShadow() {
@@ -59,7 +72,6 @@ function ensureArticleLink(container) {
   link.classList.toggle("is-active", location.pathname.startsWith("/hidacity-bousaiguide/articles/"));
 
   // すべてのページで「防災記事」をハザードマップの直後に統一。
-  // これにより記事ページだけナビ項目の並びが変わって、右側のボタン位置がずれる問題を防ぐ。
   const hazard = container.querySelector('a[href="/hidacity-bousaiguide/hazard/"]');
   if (hazard && hazard.nextElementSibling !== link) {
     container.insertBefore(link, hazard.nextElementSibling);
@@ -127,6 +139,7 @@ function initAccordion() {
 }
 
 function init() {
+  ensureFavicon();
   initTheme();
   initHeaderShadow();
   initArticleNav();
