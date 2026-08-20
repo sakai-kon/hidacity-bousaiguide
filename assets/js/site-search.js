@@ -1,6 +1,16 @@
 const BASE = "/hidacity-bousaiguide";
 const SEARCH_URL = `${BASE}/search/site-search.json`;
+const STYLE_URL = `${BASE}/assets/css/site-search.css?v=2026-08-20-search2`;
 let indexPromise = null;
+
+function ensureSearchStyles() {
+  if (document.querySelector('link[data-site-search-style="true"]')) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = STYLE_URL;
+  link.dataset.siteSearchStyle = "true";
+  document.head.appendChild(link);
+}
 
 function normalize(value) {
   return String(value || "")
@@ -25,7 +35,7 @@ async function loadSearchIndex() {
   return indexPromise;
 }
 
-function makeResult(item, query) {
+function makeResult(item) {
   const card = document.createElement("a");
   card.className = "site-search-result";
   card.href = item.url;
@@ -99,6 +109,7 @@ function closeSearch(overlay) {
 }
 
 export function initSiteSearch() {
+  ensureSearchStyles();
   const actions = document.querySelector(".header-actions");
   if (!actions || document.querySelector("[data-site-search-trigger]")) return;
 
@@ -131,7 +142,7 @@ export function initSiteSearch() {
         .filter((entry) => entry.score > 0)
         .sort((a, b) => b.score - a.score || String(a.item.title).localeCompare(String(b.item.title), "ja"));
       status.textContent = matched.length ? `${matched.length}件の検索結果` : "該当するページが見つかりませんでした。";
-      matched.slice(0, 30).forEach(({ item }) => results.appendChild(makeResult(item, query)));
+      matched.slice(0, 30).forEach(({ item }) => results.appendChild(makeResult(item)));
     } catch (error) {
       status.textContent = `検索データを読み込めませんでした：${error.message}`;
     }
@@ -142,7 +153,6 @@ export function initSiteSearch() {
     clearTimeout(timer);
     timer = setTimeout(render, 120);
   });
-
   button.addEventListener("click", () => openSearch(overlay));
   overlay.addEventListener("click", (event) => {
     if (event.target.closest("[data-search-close]")) closeSearch(overlay);
