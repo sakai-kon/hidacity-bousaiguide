@@ -1,13 +1,10 @@
 /**
  * sw.js
  * 飛騨防災ガイド Service Worker
- *
- * HTMLはネットワーク優先で取得し、古いページが先に表示される問題を防ぐ。
- * ハザードマップのGeoJSONはキャッシュせず常にネットワークから取得する。
- * UI refresh CSS を事前キャッシュして、全ページで統一UIを安定して表示する。
+ * HTMLはネットワーク優先、ハザードGeoJSONとUI refresh CSSは最新取得を優先。
  */
 
-const CACHE_NAME = "hida-bousai-v6";
+const CACHE_NAME = "hida-bousai-v7";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
 const HERO_IMAGE = `${BASE}/images/hero/castle-photo.svg`;
@@ -98,9 +95,9 @@ function injectHeroPhoto(html, requestUrl) {
   const url = new URL(requestUrl);
   const isTopPage = url.pathname === `${BASE}/` || url.pathname === `${BASE}/index.html`;
   if (!isTopPage || html.includes('data-hero-photo="true"')) return html;
-  const heroVisualPattern = /<div class="hero-visual">[\s\S]*?<\/div>/;
-  const heroPhoto = `<div class="hero-visual" data-hero-photo="true"><img src="${HERO_IMAGE}" alt="飛騨防災ガイドのヒーロー写真" loading="eager" decoding="async"></div>`;
-  return html.replace(heroVisualPattern, heroPhoto);
+  const pattern = /<div class="hero-visual">[\s\S]*?<\/div>/;
+  const replacement = `<div class="hero-visual" data-hero-photo="true"><img src="${HERO_IMAGE}" alt="飛騨防災ガイドのヒーロー写真" loading="eager" decoding="async"></div>`;
+  return html.replace(pattern, replacement);
 }
 
 function fetchAndUpdate(request) {
