@@ -2,23 +2,24 @@
  * sw.js
  * 飛騨防災ガイド Service Worker
  *
- * HTMLはネットワーク優先にして、サイト更新時に古いページが
- * 最初に表示される問題を防ぐ。
- * ハザードマップのGeoJSONはキャッシュせず、常に最新の公開データを取得する。
- * その他のGETリソースは従来どおりキャッシュを優先し、裏で更新する。
+ * HTMLはネットワーク優先で取得し、古いページが先に表示される問題を防ぐ。
+ * ハザードマップのGeoJSONはキャッシュせず常にネットワークから取得する。
+ * UI refresh CSS を事前キャッシュして、全ページで統一UIを安定して表示する。
  */
 
-const CACHE_NAME = "hida-bousai-v5";
+const CACHE_NAME = "hida-bousai-v6";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
 const HERO_IMAGE = `${BASE}/images/hero/castle-photo.svg`;
+const UI_REFRESH_CSS = `${BASE}/assets/css/ui-refresh.css`;
 
 const PRECACHE_URLS = [
   `${BASE}/`, `${BASE}/hazard/`, `${BASE}/bag/`, `${BASE}/knowledge/`, `${BASE}/quiz/`, `${BASE}/contact/`,
   `${BASE}/privacy/`, `${BASE}/terms/`, `${BASE}/manifest.webmanifest`, `${BASE}/favicon.svg`,
-  `${BASE}/assets/css/global.css`, `${BASE}/assets/js/common.js`, `${BASE}/assets/js/storage.js`,
-  `${BASE}/assets/js/checklist.js`, `${BASE}/assets/js/quiz.js`, `${BASE}/assets/js/pwa.js`,
-  HERO_IMAGE, `${BASE}/icons/icon-192.png`, `${BASE}/icons/icon-512.png`,
+  `${BASE}/assets/css/global.css`, UI_REFRESH_CSS,
+  `${BASE}/assets/js/common.js`, `${BASE}/assets/js/storage.js`, `${BASE}/assets/js/checklist.js`,
+  `${BASE}/assets/js/quiz.js`, `${BASE}/assets/js/pwa.js`, HERO_IMAGE,
+  `${BASE}/icons/icon-192.png`, `${BASE}/icons/icon-512.png`,
 ];
 
 self.addEventListener("install", (event) => {
@@ -27,8 +28,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))).then(() => self.clients.claim())
   );
 });
 
@@ -39,6 +39,18 @@ self.addEventListener("fetch", (event) => {
 
   if (requestUrl.origin === self.location.origin && requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX)) {
     event.respondWith(fetch(request, { cache: "no-store" }));
+    return;
+  }
+
+  if (requestUrl.origin === self.location.origin && requestUrl.pathname === UI_REFRESH_CSS) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then((response) => {
+          if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
     return;
   }
 
@@ -55,12 +67,10 @@ self.addEventListener("fetch", (event) => {
               statusText: response.statusText,
               headers: response.headers,
             });
-            const clone = modifiedResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, modifiedResponse.clone()));
             return modifiedResponse;
           }
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
           return response;
         })
         .catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`)))
@@ -76,10 +86,7 @@ self.addEventListener("fetch", (event) => {
       }
       return fetch(request)
         .then((response) => {
-          if (response && response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
+          if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
           return response;
         })
         .catch(() => caches.match(`${BASE}/`));
@@ -98,8 +105,6 @@ function injectHeroPhoto(html, requestUrl) {
 
 function fetchAndUpdate(request) {
   fetch(request).then((response) => {
-    if (response && response.ok) {
-      caches.open(CACHE_NAME).then((cache) => cache.put(request, response));
-    }
+    if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response));
   }).catch(() => {});
 }
