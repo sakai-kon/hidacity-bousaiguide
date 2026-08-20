@@ -1,4 +1,4 @@
-name: Build article index
+name: Build article and search indexes
 
 on:
   push:
@@ -24,17 +24,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Build article index
+      - name: Build article and search indexes
         run: python scripts/build_articles.py
 
-      - name: Commit generated index
+      - name: Commit generated indexes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add articles/articles.json
+          git add articles/articles.json search/site-search.json
           if git diff --cached --quiet; then
-            echo "No article index changes."
+            echo "No generated index changes."
           else
-            git commit -m "chore: update generated article index"
+            git commit -m "chore: update article and search indexes"
             git push
           fi
