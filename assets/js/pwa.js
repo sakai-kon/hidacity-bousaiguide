@@ -1,23 +1,23 @@
 /**
  * pwa.js
- * Service Workerの登録と、全ページ共通UIリフレッシュCSSの読み込みを行う。
+ * Service Worker登録 + 全ページ共通UIスタイルのロード。
  */
 
-const SW_VERSION = "2026-08-20-3";
-const UI_CSS_VERSION = "2026-08-20-ui-1";
+const SW_VERSION = "2026-08-20-4";
+const UI_VERSION = "2026-08-20-ui2";
 const BASE = "/hidacity-bousaiguide";
+const UI_CSS = `${BASE}/assets/css/ui-refresh.css?v=${UI_VERSION}`;
 
-function ensureUiRefreshStyles() {
-  const href = `${BASE}/assets/css/ui-refresh.css?v=${UI_CSS_VERSION}`;
-  if (document.querySelector(`link[data-ui-refresh][href^="${BASE}/assets/css/ui-refresh.css"]`)) return;
+function ensureUiStyles() {
+  if (document.querySelector('link[data-ui-refresh="true"]')) return;
   const link = document.createElement("link");
   link.rel = "stylesheet";
-  link.href = href;
+  link.href = UI_CSS;
   link.dataset.uiRefresh = "true";
   document.head.appendChild(link);
 }
 
-ensureUiRefreshStyles();
+ensureUiStyles();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
