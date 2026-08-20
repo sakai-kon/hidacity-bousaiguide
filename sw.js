@@ -1,12 +1,13 @@
 /**
  * sw.js
  * 飛騨防災ガイド Service Worker
- * HTMLはネットワーク優先、ハザードGeoJSONとUI refresh CSSは最新取得を優先。
+ * HTMLはネットワーク優先。ハザードGeoJSONと記事データは常に最新取得。
  */
 
-const CACHE_NAME = "hida-bousai-v7";
+const CACHE_NAME = "hida-bousai-v8";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
+const ARTICLES_PREFIX = `${BASE}/articles/`;
 const HERO_IMAGE = `${BASE}/images/hero/castle-photo.svg`;
 const UI_REFRESH_CSS = `${BASE}/assets/css/ui-refresh.css`;
 
@@ -24,9 +25,7 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))).then(() => self.clients.claim())
-  );
+  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener("fetch", (event) => {
@@ -34,61 +33,42 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const requestUrl = new URL(request.url);
 
-  if (requestUrl.origin === self.location.origin && requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX)) {
+  if (requestUrl.origin === self.location.origin && (requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX) || requestUrl.pathname.startsWith(ARTICLES_PREFIX))) {
     event.respondWith(fetch(request, { cache: "no-store" }));
     return;
   }
 
   if (requestUrl.origin === self.location.origin && requestUrl.pathname === UI_REFRESH_CSS) {
-    event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then((response) => {
-          if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-          return response;
-        })
-        .catch(() => caches.match(request))
-    );
+    event.respondWith(fetch(request, { cache: "no-store" }).then((response) => {
+      if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+      return response;
+    }).catch(() => caches.match(request)));
     return;
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then(async (response) => {
-          if (!response || !response.ok) return response;
-          const contentType = response.headers.get("content-type") || "";
-          if (contentType.includes("text/html")) {
-            const html = await response.text();
-            const modifiedResponse = new Response(injectHeroPhoto(html, request.url), {
-              status: response.status,
-              statusText: response.statusText,
-              headers: response.headers,
-            });
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, modifiedResponse.clone()));
-            return modifiedResponse;
-          }
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`)))
-    );
+    event.respondWith(fetch(request).then(async (response) => {
+      if (!response || !response.ok) return response;
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("text/html")) {
+        const html = await response.text();
+        const modifiedResponse = new Response(injectHeroPhoto(html, request.url), { status: response.status, statusText: response.statusText, headers: response.headers });
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, modifiedResponse.clone()));
+        return modifiedResponse;
+      }
+      caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+      return response;
+    }).catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`))));
     return;
   }
 
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) {
-        fetchAndUpdate(request);
-        return cached;
-      }
-      return fetch(request)
-        .then((response) => {
-          if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-          return response;
-        })
-        .catch(() => caches.match(`${BASE}/`));
-    })
-  );
+  event.respondWith(caches.match(request).then((cached) => {
+    if (cached) { fetchAndUpdate(request); return cached; }
+    return fetch(request).then((response) => {
+      if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+      return response;
+    }).catch(() => caches.match(`${BASE}/`));
+  }));
 });
 
 function injectHeroPhoto(html, requestUrl) {
