@@ -1,13 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="飛騨防災ガイド">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e8650a"/>
-      <stop offset="1" stop-color="#b84e08"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b78d0"/>
+      <stop offset="1" stop-color="#11b88a"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9f6ff"/>
+      <stop offset="1" stop-color="#cfeaff"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="url(#g)"/>
-  <path d="M32 10 L50 20 V32 C50 44 42 51 32 55 C22 51 14 44 14 32 V20 Z"
-        fill="#ffffff" opacity="0.95"/>
-  <path d="M32 20 L23 37 H30 L27.5 47 L41 30 H33.5 L36.5 20 Z"
-        fill="#e8650a"/>
+  <circle cx="64" cy="64" r="62" fill="url(#bg)"/>
+  <circle cx="64" cy="64" r="53" fill="url(#sky)"/>
+  <path d="M14 72 38 42l17 20 16-25 29 35v19H14Z" fill="#527b94"/>
+  <path d="m30 51 8-9 8 8-7-2-5 7Z" fill="#fff" opacity=".95"/>
+  <path d="m67 49 4-12 7 10-5-2-4 5Z" fill="#fff" opacity=".95"/>
+  <path d="M12 84c21-11 35 8 52-1 18-10 29 9 52-4v23H12Z" fill="#148fd4"/>
+  <path d="M12 91c21-9 37 6 53-2 17-9 29 5 51-3" fill="none" stroke="#bfe8ff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M48 66c4-8 9-12 16-12s12 4 16 12v11H48Z" fill="#fff" stroke="#0b78d0" stroke-width="3"/>
+  <path d="M57 68h14" stroke="#0b78d0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M52 77h24" stroke="#0b78d0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M23 77 33 68l11 8-9 4-11-3Z" fill="#f1f7d5" stroke="#0b78d0" stroke-width="2"/>
+  <circle cx="36" cy="69" r="4" fill="#ef5b35" stroke="#fff" stroke-width="1.5"/>
+  <rect x="83" y="69" width="20" height="15" rx="4" fill="#ef6a2d" stroke="#fff" stroke-width="2"/>
+  <path d="M93 73v7M89.5 76.5h7" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M30 101h68" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".95"/>
+  <circle cx="64" cy="64" r="60" fill="none" stroke="#9ef0cf" stroke-width="3" opacity=".9"/>
 </svg>
