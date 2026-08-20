@@ -4,13 +4,13 @@
  *
  * HTMLはネットワーク優先にして、サイト更新時に古いページが
  * 最初に表示される問題を防ぐ。
- * また、トップページのヒーロー画像は images/hero/ の写真を使用する。
- * ネットワークに接続できない場合のみキャッシュへフォールバックする。
+ * ハザードマップのGeoJSONはキャッシュせず、常に最新の公開データを取得する。
  * その他のGETリソースは従来どおりキャッシュを優先し、裏で更新する。
  */
 
-const CACHE_NAME = "hida-bousai-v3";
+const CACHE_NAME = "hida-bousai-v4";
 const BASE = "/hidacity-bousaiguide";
+const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
 const HERO_IMAGE = `${BASE}/images/hero/castle-photo.svg`;
 
 const PRECACHE_URLS = [
@@ -64,6 +64,16 @@ self.addEventListener("fetch", (event) => {
 
   // GET以外（POSTなど）はそのままネットワークへ
   if (request.method !== "GET") return;
+
+  const requestUrl = new URL(request.url);
+
+  // ハザードマップの実データは大容量かつ更新対象なので、
+  // Service Workerのキャッシュを使わず常にネットワークから取得する。
+  // クエリ付きURLにも対応するためpathnameで判定する。
+  if (requestUrl.origin === self.location.origin && requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX)) {
+    event.respondWith(fetch(request, { cache: "no-store" }));
+    return;
+  }
 
   // HTMLのページ遷移はネットワーク優先。
   // 最新版を取得したあと、トップページのヒーロー部分だけ写真表示に差し替える。
