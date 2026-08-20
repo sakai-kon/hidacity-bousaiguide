@@ -15,8 +15,7 @@ import { saveData, loadData } from "/hidacity-bousaiguide/assets/js/storage.js";
 import { initSiteSearch } from "/hidacity-bousaiguide/assets/js/site-search.js";
 
 const THEME_KEY = "theme";
-const BRAND_ICON_URL = "/hidacity-bousaiguide/assets/icons/hidacity-bousaiguideaicons.png?v=2026-08-20-icon-upload";
-const FALLBACK_ICON_URL = "/hidacity-bousaiguide/assets/icons/hida-bousai-icon.svg?v=2026-08-20-icon2";
+const BRAND_ICON_URL = "/hidacity-bousaiguide/assets/icons/hida-bousai-icon.png?v=2026-08-20-icon";
 const FAVICON_URL = BRAND_ICON_URL;
 
 function applyTheme(theme) {
@@ -57,10 +56,6 @@ function ensureBrandIcon() {
     img.style.height = "100%";
     img.style.objectFit = "cover";
     img.style.borderRadius = "inherit";
-    img.onerror = () => {
-      if (img.src.endsWith(FALLBACK_ICON_URL)) return;
-      img.src = FALLBACK_ICON_URL;
-    };
     badge.appendChild(img);
   });
 }
@@ -74,10 +69,6 @@ function ensureFavicon() {
   }
   icon.type = "image/png";
   icon.href = FAVICON_URL;
-  icon.onerror = () => {
-    icon.type = "image/svg+xml";
-    icon.href = FALLBACK_ICON_URL;
-  };
 }
 
 function initHeaderShadow() {
