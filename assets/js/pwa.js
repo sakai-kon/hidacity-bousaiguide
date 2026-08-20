@@ -3,7 +3,7 @@
  * Service Worker登録 + 全ページ共通UIスタイルのロード。
  */
 
-const SW_VERSION = "2026-08-20-4";
+const SW_VERSION = "2026-08-20-7";
 const UI_VERSION = "2026-08-20-ui2";
 const BASE = "/hidacity-bousaiguide";
 const UI_CSS = `${BASE}/assets/css/ui-refresh.css?v=${UI_VERSION}`;
