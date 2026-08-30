@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -34,7 +36,34 @@ jobs:
           git add articles/articles.json search/site-search.json
           if git diff --cached --quiet; then
             echo "No generated index changes."
-          else
-            git commit -m "chore: update article and search indexes"
-            git push
+            exit 0
           fi
+
+          git commit -m "chore: update article and search indexes"
+
+          # The workflow may race with another push to main. Rebase the
+          # generated commit onto the newest main before pushing.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+            else
+              echo "Rebase conflict; generated indexes need to be rebuilt on the latest main."
+              git rebase --abort || true
+              git reset --hard origin/main
+              python scripts/build_articles.py
+              git add articles/articles.json search/site-search.json
+              if git diff --cached --quiet; then
+                echo "Generated indexes are already up to date."
+                exit 0
+              fi
+              git commit -m "chore: update article and search indexes"
+            fi
+            echo "Push race detected; retrying ($attempt/5)..."
+            sleep 2
+          done
+
+          echo "Failed to push generated indexes after 5 attempts."
+          exit 1
