@@ -3,7 +3,7 @@
  * Service Worker登録 + 全ページ共通UIスタイルのロード。
  */
 
-const SW_VERSION = "2026-08-20-11";
+const SW_VERSION = "2026-08-30-01";
 const UI_VERSION = "2026-08-20-ui2";
 const SEARCH_STYLE_VERSION = "2026-08-20-search2";
 const BASE = "/hidacity-bousaiguide";
@@ -26,7 +26,10 @@ ensureStyles();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register(`${BASE}/sw.js?v=${SW_VERSION}`, { scope: `${BASE}/`, updateViaCache: "none" })
+      .register(`${BASE}/sw.js?v=${SW_VERSION}`, {
+        scope: `${BASE}/`,
+        updateViaCache: "none",
+      })
       .then((reg) => reg.update().catch(() => {}))
       .catch((err) => console.warn("[pwa] Service Worker registration failed:", err));
   });
