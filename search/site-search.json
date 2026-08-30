@@ -1,8 +1,87 @@
 [
-  {"title":"避難場所・ハザードマップ","description":"飛騨市の土砂災害警戒区域などを地図で確認します。","url":"/hidacity-bousaiguide/hazard/","type":"hazard","typeLabel":"ハザードマップ","keywords":["ハザードマップ","土砂災害","警戒区域","特別警戒区域","避難","危険区域"]},
-  {"title":"持ち物チェックリスト","description":"非常時に備えて必要な持ち物をチェックできます。","url":"/hidacity-bousaiguide/bag/","type":"bag","typeLabel":"持ち物","keywords":["持ち物","非常持ち出し袋","備え","チェックリスト"]},
-  {"title":"防災知識","description":"災害が起きたときの行動や防災について学べます。","url":"/hidacity-bousaiguide/knowledge/","type":"knowledge","typeLabel":"防災知識","keywords":["防災","知識","避難","地震","洪水","土砂災害","雪災害"]},
-  {"title":"防災クイズ","description":"クイズで防災知識を確認できます。","url":"/hidacity-bousaiguide/quiz/","type":"quiz","typeLabel":"防災クイズ","keywords":["クイズ","防災","知識","避難"]},
-  {"title":"防災記事","description":"防災について調べたことを記事として読めます。","url":"/hidacity-bousaiguide/articles/","type":"articles","typeLabel":"防災記事","keywords":["記事","読み物","防災"]},
-  {"title":"防災を身近にする","description":"普段から少しずつできる防災の備えについて紹介します。","url":"/hidacity-bousaiguide/articles/view.html?slug=%E9%98%B2%E7%81%BD%E3%82%92%E8%BA%AB%E8%BF%91%E3%81%AB%E3%81%99%E3%82%8B","type":"article","typeLabel":"防災記事","category":"備え","date":"2026-08-20","keywords":["防災","備え","ハザードマップ","避難"],"searchText":"災害への備えは、特別なことを一度だけするのではなく、普段から少しずつ確認しておくことが大切です。自宅や学校の周辺の危険区域、災害時の避難先、家族との連絡方法を確認しましょう。ハザードマップを見たり、家族と避難先を話し合ったりすることが備えになります。"}
+  {
+    "title": "避難場所・ハザードマップ",
+    "description": "飛騨市の土砂災害警戒区域などを地図で確認します。",
+    "url": "/hidacity-bousaiguide/hazard/",
+    "type": "hazard",
+    "typeLabel": "ハザードマップ",
+    "keywords": [
+      "ハザードマップ",
+      "土砂災害",
+      "警戒区域",
+      "特別警戒区域",
+      "避難",
+      "危険区域"
+    ]
+  },
+  {
+    "title": "持ち物チェックリスト",
+    "description": "非常時に備えて必要な持ち物をチェックできます。",
+    "url": "/hidacity-bousaiguide/bag/",
+    "type": "bag",
+    "typeLabel": "持ち物",
+    "keywords": [
+      "持ち物",
+      "非常持ち出し袋",
+      "備え",
+      "チェックリスト"
+    ]
+  },
+  {
+    "title": "防災知識",
+    "description": "災害が起きたときの行動や防災について学べます。",
+    "url": "/hidacity-bousaiguide/knowledge/",
+    "type": "knowledge",
+    "typeLabel": "防災知識",
+    "keywords": [
+      "防災",
+      "知識",
+      "避難",
+      "地震",
+      "洪水",
+      "土砂災害",
+      "雪災害"
+    ]
+  },
+  {
+    "title": "防災クイズ",
+    "description": "クイズで防災知識を確認できます。",
+    "url": "/hidacity-bousaiguide/quiz/",
+    "type": "quiz",
+    "typeLabel": "防災クイズ",
+    "keywords": [
+      "クイズ",
+      "防災",
+      "知識",
+      "避難"
+    ]
+  },
+  {
+    "title": "防災記事",
+    "description": "防災について調べたことを記事として読めます。",
+    "url": "/hidacity-bousaiguide/articles/",
+    "type": "articles",
+    "typeLabel": "防災記事",
+    "keywords": [
+      "記事",
+      "読み物",
+      "防災"
+    ]
+  },
+  {
+    "title": "防災を身近にする",
+    "description": "普段から少しずつできる防災の備えについて紹介します。",
+    "url": "/hidacity-bousaiguide/articles/view.html?slug=防災を身近にする",
+    "type": "article",
+    "typeLabel": "防災記事",
+    "category": "備え",
+    "date": "2026-08-20",
+    "keywords": [
+      "防災",
+      "備え",
+      "ハザードマップ",
+      "避難"
+    ],
+    "searchText": "防災を身近にする 災害への備えは、特別なことを一度だけするのではなく、普段から少しずつ確認しておくことが大切です。 まずは、自宅や学校の周辺にどのような危険があるのかを確認してみましょう。ハザードマップを見たり、家族と避難先を話し合ったりするだけでも、いざというときの行動を考えやすくなります。 まず確認しておきたいこと 自宅や学校の周辺の危険区域 災害時の避難先 家族との連絡方法 このサイトでは、飛騨市の防災について調べたことを記事として追加していきます。"
+  }
 ]
