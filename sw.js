@@ -1,11 +1,11 @@
 /**
  * sw.js
  * 飛騨防災ガイド Service Worker
- * HTMLはネットワーク優先。ハザード・記事・検索データは常に最新取得。
- * 古い hida-bousai キャッシュは activate 時に完全削除する。
+ * HTMLはネットワーク優先。オフライン時のみキャッシュを使用。
+ * ハザード・記事・検索データは常に最新取得。
  */
 
-const CACHE_NAME = "hida-bousai-v13";
+const CACHE_NAME = "hida-bousai-v14";
 const CACHE_PREFIX = "hida-bousai-";
 const BASE = "/hidacity-bousaiguide";
 const HAZARD_DATA_PREFIX = `${BASE}/hazard/data/`;
@@ -49,32 +49,56 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const requestUrl = new URL(request.url);
 
-  if (requestUrl.origin === self.location.origin && (requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX) || requestUrl.pathname === ARTICLE_JSON || requestUrl.pathname === SEARCH_JSON)) {
+  if (requestUrl.origin === self.location.origin && (
+    requestUrl.pathname.startsWith(HAZARD_DATA_PREFIX) ||
+    requestUrl.pathname === ARTICLE_JSON ||
+    requestUrl.pathname === SEARCH_JSON
+  )) {
     event.respondWith(fetch(request, { cache: "no-store" }));
     return;
   }
 
-  if (requestUrl.origin === self.location.origin && (requestUrl.pathname === UI_REFRESH_CSS || requestUrl.pathname === SITE_SEARCH_CSS || requestUrl.pathname === BRAND_ICON)) {
-    event.respondWith(fetch(request, { cache: "no-store" }).then((response) => {
-      if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-      return response;
-    }).catch(() => caches.match(request)));
+  if (requestUrl.origin === self.location.origin && (
+    requestUrl.pathname === UI_REFRESH_CSS ||
+    requestUrl.pathname === SITE_SEARCH_CSS ||
+    requestUrl.pathname === BRAND_ICON
+  )) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then((response) => {
+          if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
     return;
   }
 
+  // HTMLはブラウザHTTPキャッシュを使わず、毎回ネットワークへ確認する。
+  // 通信できない場合だけService Workerキャッシュを使用する。
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).then(async (response) => {
-      if (!response || !response.ok) return response;
-      const contentType = response.headers.get("content-type") || "";
-      if (contentType.includes("text/html")) {
-        const html = await response.text();
-        const modifiedResponse = new Response(injectHeroPhoto(html, request.url), { status: response.status, statusText: response.statusText, headers: response.headers });
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, modifiedResponse.clone()));
-        return modifiedResponse;
-      }
-      caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-      return response;
-    }).catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`))));
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then(async (response) => {
+          if (!response || !response.ok) return response;
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("text/html")) {
+            const html = await response.text();
+            const modifiedHtml = injectHeroPhoto(html, request.url);
+            const headers = new Headers(response.headers);
+            headers.delete("content-length");
+            const modifiedResponse = new Response(modifiedHtml, {
+              status: response.status,
+              statusText: response.statusText,
+              headers
+            });
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, modifiedResponse.clone())).catch(() => {});
+            return modifiedResponse;
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`)))
+    );
     return;
   }
 
@@ -97,7 +121,7 @@ function injectHeroPhoto(html, requestUrl) {
 }
 
 function fetchAndUpdate(request) {
-  fetch(request).then((response) => {
-    if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response));
+  fetch(request, { cache: "no-store" }).then((response) => {
+    if (response && response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
   }).catch(() => {});
 }
