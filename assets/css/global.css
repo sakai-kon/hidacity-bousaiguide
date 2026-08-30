@@ -421,7 +421,8 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
-  align-self: center;
+　align-self: center;
+　transform: translateY(-20px);
 }
 .hero-stats {
   display: grid;
